@@ -1,45 +1,30 @@
 #!/usr/bin/env bash
 
-# This is our Continous Deployment deploy script. You may use it as a baseline,
-# but it is likely
-#  a) Way too specific
-#  b) Full of »totally best practices«™
+# This is our Continous Deployment deploy script.
+# It just calls out to the server and requests the docker image to be pulled
+# again and restarts the service.
 
 # Fail if any command inside fails
 set -e
-
-function copyToServer() {
-    echo "Copying $1 to $CD_URL at location $2"
-    scp -P "$CD_PORT" "$1" "$CD_USER@$CD_URL:$2"
-}
 
 function executeOnServer() {
     echo "Executing on server: '$1'"
     ssh -p "$CD_PORT" "$CD_USER@$CD_URL" "$1"
 }
 
-DOCKER_SERVER_DIR="/home/pse_test/velcom/.docker"
+if [ -z "$1" -o -z "$2" ]; then
+    echo "Usage: $0 <github actor name> <github packes access token>"
+    exit 1
+fi
 
-executeOnServer "rm -rf $DOCKER_SERVER_DIR"
-executeOnServer "mkdir -p $DOCKER_SERVER_DIR"
+GITHUB_NAME="$1"
+GITHUB_TOKEN="$2"
 
-copyToServer "backend/backend/target/backend.jar" "$DOCKER_SERVER_DIR"
-copyToServer "backend/runner/target/runner.jar" "$DOCKER_SERVER_DIR"
-
-copyToServer "docs/nginx-site" "$DOCKER_SERVER_DIR"
-copyToServer "docs/nginx-site-single-port" "$DOCKER_SERVER_DIR"
-copyToServer "docs/nginx.conf" "$DOCKER_SERVER_DIR"
-copyToServer "docs/start-backend-docker.sh" "$DOCKER_SERVER_DIR"
-
-tar -cf dist.tar "frontend/dist"
-copyToServer "dist.tar" "$DOCKER_SERVER_DIR"
-
-executeOnServer "tar -xf $DOCKER_SERVER_DIR/dist.tar --directory $DOCKER_SERVER_DIR"
-executeOnServer "mv $DOCKER_SERVER_DIR/frontend/dist $DOCKER_SERVER_DIR/dist"
-executeOnServer "rmdir $DOCKER_SERVER_DIR/frontend"
+# Login to github registry
+executeOnServer "echo "$GITHUB_TOKEN" | docker login docker.pkg.github.com -u "$GITHUB_NAME" --password-stdin"
 
 # Build it
-executeOnServer "sudo /home/pse_test/velcom/deploy_from_docker.sh"
+executeOnServer "sudo /home/pse_test/velcom/update-docker-image.sh"
 
 # Restart the docker container :)
 executeOnServer "sudo systemctl restart pse-test-velcom.service"
