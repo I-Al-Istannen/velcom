@@ -8,13 +8,13 @@ frontend:
 	@echo '#######################'
 	@echo '## Building frontend ##'
 	@echo '#######################'
-	make -C frontend/
+	make -C frontend/ --trace
 
 backend:
 	@echo '######################'
 	@echo '## Building backend ##'
 	@echo '######################'
-	make -C backend/
+	make -C backend/ --trace
 
 clean:
 	@echo '#######################'
