@@ -31,7 +31,7 @@ jobs:
         with:
           node-version: '12'
       - name: "Install make"
-        run: "apt update && apt install make -y"
+        run: "sudo apt update && sudo apt install make -y"
       - name: "Build frontend"
         run: "make frontend mode=production-single-port"
       - name: "Build backend"
