@@ -36,7 +36,7 @@ jobs:
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
           restore-keys: |
             ${{ runner.os }}-maven-
-      
+
       - name: "Build frontend"
         run: "make frontend mode=production-single-port"
       - name: "Build backend"
@@ -96,7 +96,7 @@ jobs:
       - name: Push image
         run: |
           IMAGE_ID=docker.pkg.github.com/${{ github.repository }}/$IMAGE_NAME
-          
+
           # Change all uppercase to lowercase
           IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
 
@@ -114,3 +114,15 @@ jobs:
 
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
+
+  # Deploy it
+  deploy:
+    # Ensure build job passes before pushing image.
+    needs: [push]
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    steps:
+      - name: "Call deploy script"
+        run: "bash docs/deploy.sh"
