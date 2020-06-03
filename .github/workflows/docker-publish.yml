@@ -30,8 +30,6 @@ jobs:
       - uses: actions/setup-node@v2-beta
         with:
           node-version: '12'
-      - name: "Install make"
-        run: "sudo apt update && sudo apt install make -y"
       - uses: actions/cache@v2
         with:
           path: ~/.m2/repository
@@ -89,7 +87,7 @@ jobs:
 
       # BUILDING
       - name: "Build image"
-        run: "make docker-build-server-single-port USER_ID=$UID"
+        run: "make docker-build-server-single-port USER_ID=$UID --trace"
 
       - name: "Log into registry"
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
