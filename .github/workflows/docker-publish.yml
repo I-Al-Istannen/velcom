@@ -131,5 +131,6 @@ jobs:
       SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
 
     steps:
+      - uses: actions/checkout@v2
       - name: "Call deploy script"
         run: "bash docs/deploy.sh"
