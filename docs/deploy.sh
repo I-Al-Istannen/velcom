@@ -54,7 +54,7 @@ GITHUB_TOKEN="$2"
 setup
 
 # Login to github registry
-executeOnServer "echo "$GITHUB_TOKEN" | docker login docker.pkg.github.com -u "$GITHUB_NAME" --password-stdin"
+executeOnServer "echo "$GITHUB_TOKEN" | sudo docker login docker.pkg.github.com -u "$GITHUB_NAME" --password-stdin"
 
 # Build it
 executeOnServer "sudo /home/pse_test/velcom/update-docker-image.sh"
