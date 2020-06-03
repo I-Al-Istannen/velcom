@@ -23,7 +23,7 @@ function setup() {
     ## Install ssh-agent if not already installed, it is required by Docker.
     ## (change apt-get to yum if you use an RPM-based image)
     ##
-    'which ssh-agent || ( apt update -y && apt install openssh-client -y )'
+    which ssh-agent || ( apt update -y && apt install openssh-client -y )
 
     ##
     ## Run ssh-agent (inside the build environment)
