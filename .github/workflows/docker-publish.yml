@@ -123,6 +123,13 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event_name == 'push'
 
+    env:
+      CD_PORT: ${{ secrets.CD_PORT }}
+      CD_URL: ${{ secrets.CD_URL }}
+      CD_USER: ${{ secrets.CD_USER }}
+      SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
     steps:
       - name: "Call deploy script"
         run: "bash docs/deploy.sh"
