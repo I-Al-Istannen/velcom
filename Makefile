@@ -48,7 +48,7 @@ docker-build-server-single-port: backend
 	cp Dockerfile-Single-Port .docker/Dockerfile
 	(cd .docker && sudo docker build -t velcom-server:latest --build-arg USER_ID=$(USER_ID) .)
 
-docker-build-server-single-port-no-deps:
+docker-github-ci:
 	mkdir -p .docker
 	cp backend.jar .docker
 	cp -r dist .docker
