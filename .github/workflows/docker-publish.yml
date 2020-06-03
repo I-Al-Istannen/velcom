@@ -36,7 +36,17 @@ jobs:
         run: "make frontend mode=production-single-port"
       - name: "Build backend"
         run: "make backend"
-      
+      - name: "Upload frontend artifacts"
+        uses: actions/upload-artifact@v1
+        with:
+          name: frontend-artifacts
+          path: frontend/dist
+      - name: "Upload backend artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: backend-artifacts
+          path: "backend/**/target/{backend, runner}.jar"
+
 
   # Push image to GitHub Packages.
   push:
@@ -47,6 +57,7 @@ jobs:
     if: github.event_name == 'push'
 
     steps:
+      # SETUP
       - uses: actions/checkout@v2
       - uses: actions/setup-java@v1
         with:
@@ -55,6 +66,17 @@ jobs:
         with:
           node-version: '12'
 
+      # CACHE
+      - name: "Download frontend artifacts"
+        uses: actions/download-artifact@v1
+        with:
+          name: frontend-artifacts
+      - name: "Download backend artifacts"
+        uses: actions/download-artifact@v2
+        with:
+          name: backend-artifacts
+
+      # BUILDING
       - name: "Build image"
         run: "make docker-build-server-single-port USER_ID=$UID"
 
