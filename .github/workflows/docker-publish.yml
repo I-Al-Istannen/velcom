@@ -32,6 +32,13 @@ jobs:
           node-version: '12'
       - name: "Install make"
         run: "sudo apt update && sudo apt install make -y"
+      - uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+      
       - name: "Build frontend"
         run: "make frontend mode=production-single-port"
       - name: "Build backend"
@@ -45,12 +52,12 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: backend-artifacts
-          path: "backend/runner/target/backend.jar"
+          path: backend/backend/target/backend.jar
       - name: "Upload backend/runner artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: backend-artifacts
-          path: "backend/backend/target/runner.jar"
+          path: backend/runner/target/runner.jar
 
   # Push image to GitHub Packages.
   push:
