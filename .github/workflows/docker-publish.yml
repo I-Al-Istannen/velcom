@@ -87,10 +87,8 @@ jobs:
           name: backend-artifacts
 
       # BUILDING
-      - name: "Test this"
-        run: "ls -lah ."
       - name: "Build image"
-        run: "make docker-build-server-single-port-no-deps USER_ID=$UID --trace"
+        run: "make docker-github-ci USER_ID=$UID --trace"
 
       - name: "Log into registry"
         run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login docker.pkg.github.com -u ${{ github.actor }} --password-stdin
