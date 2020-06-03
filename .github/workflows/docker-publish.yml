@@ -41,12 +41,16 @@ jobs:
         with:
           name: frontend-artifacts
           path: frontend/dist
-      - name: "Upload backend artifacts"
+      - name: "Upload backend/backend artifacts"
         uses: actions/upload-artifact@v2
         with:
           name: backend-artifacts
-          path: "backend/**/target/{backend,runner}.jar"
-
+          path: "backend/runner/target/backend.jar"
+      - name: "Upload backend/runner artifacts"
+        uses: actions/upload-artifact@v2
+        with:
+          name: backend-artifacts
+          path: "backend/backend/target/runner.jar"
 
   # Push image to GitHub Packages.
   push:
