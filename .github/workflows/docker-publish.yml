@@ -18,6 +18,27 @@ env:
   UID: 1003
 
 jobs:
+
+  # Deploy it
+  deploy:
+    # Ensure build job passes before pushing image.
+    #needs: [push]
+
+    runs-on: ubuntu-latest
+    if: github.event_name == 'push'
+
+    env:
+      CD_PORT: ${{ secrets.CD_PORT }}
+      CD_URL: ${{ secrets.CD_URL }}
+      CD_USER: ${{ secrets.CD_USER }}
+      SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
+      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: "Call deploy script"
+        run: "bash docs/deploy.sh"
+
   # Runs the build.
   build:
     runs-on: ubuntu-latest
@@ -115,22 +136,3 @@ jobs:
           docker tag $IMAGE_NAME $IMAGE_ID:$VERSION
           docker push $IMAGE_ID:$VERSION
 
-  # Deploy it
-  deploy:
-    # Ensure build job passes before pushing image.
-    needs: [push]
-
-    runs-on: ubuntu-latest
-    if: github.event_name == 'push'
-
-    env:
-      CD_PORT: ${{ secrets.CD_PORT }}
-      CD_URL: ${{ secrets.CD_URL }}
-      CD_USER: ${{ secrets.CD_USER }}
-      SSH_KNOWN_HOSTS: ${{ secrets.SSH_KNOWN_HOSTS }}
-      SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
-
-    steps:
-      - uses: actions/checkout@v2
-      - name: "Call deploy script"
-        run: "bash docs/deploy.sh"
