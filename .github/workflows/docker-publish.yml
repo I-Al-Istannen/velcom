@@ -45,7 +45,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: backend-artifacts
-          path: "backend/**/target/{backend, runner}.jar"
+          path: "backend/**/target/{backend,runner}.jar"
 
 
   # Push image to GitHub Packages.
