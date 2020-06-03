@@ -37,7 +37,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: "Call deploy script"
-        run: "bash docs/deploy.sh"
+        run: "bash docs/deploy.sh ${{ github.actor }} ${{ secrets.GITHUB_TOKEN }}"
 
   # Runs the build.
   build:
