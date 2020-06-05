@@ -1,17 +1,9 @@
 name: Docker
 
-on:
-  push:
-    # Publish `master` as Docker `latest` image.
-    branches:
-      - master
-
-    # Publish `v1.2.3` tags as releases.
-    tags:
-      - v*
-
-  # Run tests for any PRs.
-  pull_request:
+# Run on everything. We conditionally skip deployment, but this way the build
+# is only run once. Testing could be a different workflow, but then the github
+# runners would need to build it twice, wasting resources.
+on: [push]
 
 env:
   IMAGE_NAME: velcom-server
@@ -63,7 +55,7 @@ jobs:
     needs: [build]
 
     runs-on: ubuntu-latest
-    if: github.event_name == 'push'
+    if: github.event_name == 'push' && github.ref == "refs/heads/develop"
 
     steps:
       # SETUP
