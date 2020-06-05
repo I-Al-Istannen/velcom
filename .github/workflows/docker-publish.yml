@@ -1,4 +1,4 @@
-name: Docker
+name: Build, publish and deploy
 
 # Run on everything. We conditionally skip deployment, but this way the build
 # is only run once. Testing could be a different workflow, but then the github
